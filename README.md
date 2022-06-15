@@ -19,7 +19,7 @@ or clone the repo and build the gem:
 
 ## Usage
 
-Ermir is a cli gem, it comes with 2 cli files, `ermir` and `gadgetmarshal`, `ermir` is the actual gem and the latter is just a pretty interface to `GadgetMarshaller.java` file which rewrites the gadgets of Ysoserial to match `MarshalInputStream` requirements, the output should be then piped into `ermir` or a file.
+Ermir is a cli gem, it comes with 2 cli files `ermir` and `gadgetmarshal`, `ermir` is the actual gem and the latter is just a pretty interface to [GadgetMarshaller.java](https://github.com/hakivvi/ermir/blob/main/helpers/gadgetmarshaller/GadgetMarshaller.java) file which rewrites the gadgets of [Ysoserial](https://github.com/frohoff/ysoserial) to match `MarshalInputStream` requirements, the output should be then piped into `ermir` or a file, in case of custom gadgets use `MarshalOutputStream` instead of `ObjectOutputStream` to write your serialized object to the output stream.
 
 `ermir` usage:
 ```text
@@ -42,8 +42,6 @@ Usage: gadgetmarshal /path/to/ysoserial.jar Gadget1 cmd (optional)/path/to/outpu
 
 ## PoC
 
-
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/hakivvi/ermir. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hakivvi/ermir/blob/main/CODE_OF_CONDUCT.md).
@@ -54,4 +52,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Ermir project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hakivvi/ermir/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Ermir project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/hakivvi/ermir/blob/main/CODE_OF_CONDUCT.md).
