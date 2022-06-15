@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: tru
+require 'open3'
+require 'pathname'
+
+GM_DIR = "#{__dir__}/../helpers/gadgetmarshaller"
+
+if ARGV.size < 3
+  abort "Usage: gadgetmarshal /path/to/ysoserial.jar Gadget1 cmd (optional)/path/to/output/file"
+end
+
+ARGV[0] = Pathname.new(ARGV[0]).realpath.to_s
+
+Dir.chdir(GM_DIR) do
+  Open3.capture3("javac GadgetMarshaller.java") unless %w[GadgetMarshaller.class GadgetMarshaller$MarshalOutputStream.class].all?(File.method(:exist?))
+  out, err, _ = Open3.capture3("java", "GadgetMarshaller", *ARGV[0..3], :binmode => true)
+  # $stderr.write err
+  $stdout.binmode
+  $stdout.write out
+end
