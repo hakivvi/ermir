@@ -40,9 +40,13 @@ Example:
 Usage: gadgetmarshal /path/to/ysoserial.jar Gadget1 cmd (optional)/path/to/output/file
 ```
 
+## PoC
+
+
+
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/hakivvi/ermir. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/ermir/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/hakivvi/ermir. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/hakivvi/ermir/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
