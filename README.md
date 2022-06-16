@@ -4,7 +4,7 @@ Ermir is an Evil/Rogue RMI Registry, it exploits unsecure deserialization on any
 
 # Requirements
 
-- Ruby v3.0.3 or newer.
+- Ruby v3 or newer.
 
 ## Installation
 
