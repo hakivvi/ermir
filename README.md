@@ -23,6 +23,7 @@ Ermir is a cli gem, it comes with 2 cli files `ermir` and `gadgetmarshal`, `ermi
 
 `ermir` usage:
 ```console
+➜  ~ ermir
 Ermir by @hakivvi * https://github.com/hakivvi/ermir.
 Info:
     Ermir is a Rogue/Evil RMI Registry which exploits unsecure Java deserialization on any Java code calling standard RMI methods on it.
@@ -37,6 +38,7 @@ Example:
 ```
 `gadgetmarshal` usage:
 ```console
+➜  ~ gadgetmarshal
 Usage: gadgetmarshal /path/to/ysoserial.jar Gadget1 cmd (optional)/path/to/output/file
 ```
 

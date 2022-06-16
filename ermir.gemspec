@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description = "Ermir is an Evil/Rogue RMI Registry, it exploits unsecure deserialization on any Java code calling standard RMI methods on it (list()/lookup()/bind()/rebind()/unbind())."
   spec.homepage = "https://github.com/hakivvi/ermir"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0.3"
+  spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
