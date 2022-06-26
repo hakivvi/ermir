@@ -27,12 +27,12 @@ public class GadgetMarshaller {
 
         URLClassLoader ysoserialLoader = new URLClassLoader(new URL[] {new File(ysoserial_path).toURI().toURL()}, GadgetMarshaller.class.getClassLoader());
 
-        Class<?> payloadUtils = Class.forName("ysoserial.payloads.ObjectPayload$Utils", true, ysoserialLoader);
-        Method getPayloadClassMethod = payloadUtils.getDeclaredMethod("getPayloadClass", String.class);
+        Class<?> objectPayloadUtilsClazz = Class.forName("ysoserial.payloads.ObjectPayload$Utils", true, ysoserialLoader);
+        Method getPayloadClassMethod = objectPayloadUtilsClazz.getDeclaredMethod("getPayloadClass", String.class);
         Class<?> objectPayload = (Class<?>) getPayloadClassMethod.invoke(null, gadgetName);
 
-        Class<?> payloadObjectClazz = Class.forName("ysoserial.payloads.ObjectPayload", true, ysoserialLoader);
-        Method getObjectMethod = payloadObjectClazz.getDeclaredMethod("getObject", String.class);
+        Class<?> objectPayloadClazz = Class.forName("ysoserial.payloads.ObjectPayload", true, ysoserialLoader);
+        Method getObjectMethod = objectPayloadClazz.getDeclaredMethod("getObject", String.class);
         Object gadget = getObjectMethod.invoke(objectPayload.getDeclaredConstructor().newInstance(), cmd);
 
         MarshalOutputStream mos;
