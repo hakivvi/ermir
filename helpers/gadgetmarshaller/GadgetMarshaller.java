@@ -39,8 +39,8 @@ public class GadgetMarshaller {
         try {
             mos = new MarshalOutputStream((outFile == null) ? System.out : new FileOutputStream(outFile));
             mos.writeObject(gadget);
-            mos.close();
             mos.flush();
+            mos.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error: output file path was not found.");
         }
