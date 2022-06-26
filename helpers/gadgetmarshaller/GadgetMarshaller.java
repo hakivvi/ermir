@@ -29,11 +29,11 @@ public class GadgetMarshaller {
 
         Class<?> objectPayloadUtilsClazz = Class.forName("ysoserial.payloads.ObjectPayload$Utils", true, ysoserialLoader);
         Method getPayloadClassMethod = objectPayloadUtilsClazz.getDeclaredMethod("getPayloadClass", String.class);
-        Class<?> objectPayload = (Class<?>) getPayloadClassMethod.invoke(null, gadgetName);
+        Class<?> gadgetClazz = (Class<?>) getPayloadClassMethod.invoke(null, gadgetName);
 
         Class<?> objectPayloadClazz = Class.forName("ysoserial.payloads.ObjectPayload", true, ysoserialLoader);
         Method getObjectMethod = objectPayloadClazz.getDeclaredMethod("getObject", String.class);
-        Object gadget = getObjectMethod.invoke(objectPayload.getDeclaredConstructor().newInstance(), cmd);
+        Object gadget = getObjectMethod.invoke(gadgetClazz.getDeclaredConstructor().newInstance(), cmd);
 
         MarshalOutputStream mos;
         try {
