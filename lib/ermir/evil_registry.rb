@@ -109,9 +109,9 @@ module Ermir
             implemented_interfaces << @socket.read(interface_name_size)
           end
           if implemented_interfaces[0] == "java.rmi.Remote"
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're'}bind(#{bind_key.inspect}, new <class (?) implements #{implemented_interfaces[1]}>()) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, new <class (?) implements #{implemented_interfaces[1]}>()) was called by the remote peer.", @peeraddr)
           else
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're'}bind(#{bind_key.inspect}, <java.lang.reflect.Proxy handling <#{implemented_interfaces*', '}> interfaces>) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, <java.lang.reflect.Proxy handling <#{implemented_interfaces*', '}> interfaces>) was called by the remote peer.", @peeraddr)
           end
         else
           return "received a corrupted RMI message body"
