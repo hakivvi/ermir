@@ -100,18 +100,21 @@ module Ermir
       bind_key_size = @socket.read(2).unpack("S>")[0]
       bind_key = @socket.read(bind_key_size)
       if @socket.getbyte.eql?(TransportConstants::TC_OBJECT)
-        if @socket.getbyte.eql?(TransportConstants::TC_PROXYCLASSDESC)
+        if [TransportConstants::TC_PROXYCLASSDESC, TransportConstants::TC_CLASSDESC].include?(@socket.getbyte)
           interfaces_count = @socket.read(4).unpack("L>")[0]
           implemented_interfaces = []
           interfaces_count.times do
             interface_name_size = @socket.read(2).unpack("S>")[0]
-            return "the received interface name length exceeds the max length" if interface_name_size > 100
+            if interface_name_size > 100
+              Utils.print_time_msg("the received interface name length exceeds the max length, breaking the read...")
+              break
+            end
             implemented_interfaces << @socket.read(interface_name_size)
           end
           if implemented_interfaces[0] == "java.rmi.Remote"
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're'}bind(#{bind_key.inspect}, new <class (?) implements #{implemented_interfaces[1]}>()) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, new <class (?) implements #{implemented_interfaces[1]}>()) was called by the remote peer.", @peeraddr)
           else
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're'}bind(#{bind_key.inspect}, <java.lang.reflect.Proxy handling <#{implemented_interfaces*', '}> interfaces>) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, <java.lang.reflect.Proxy handling <#{implemented_interfaces*', '}> interfaces>) was called by the remote peer.", @peeraddr)
           end
         else
           return "received a corrupted RMI message body"
