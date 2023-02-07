@@ -22,22 +22,22 @@ module Ermir
         return
       end
       Utils.print_rmi_transport_msg("received a valid RMI protocol header.", @peeraddr)
+      case @socket.getbyte
+      when TransportConstants::STREAM_PROTOCOL
+        @socket.putc(TransportConstants::PROTOCOL_ACK)
+        @socket.write([@peeraddr[-1].size].pack("S>"))
+        @socket.write(@peeraddr[-1])
+        @socket.write([@peeraddr[1]].pack("L>"))
+        Utils.print_rmi_transport_msg("sent acknowledgement of the RMI connection to the remote peer.", @peeraddr)
 
-      @socket.putc(TransportConstants::PROTOCOL_ACK)
-      @socket.write([@peeraddr[-1].size].pack("S>"))
-      @socket.write(@peeraddr[-1])
-      @socket.write([@peeraddr[1]].pack("L>"))
-      Utils.print_rmi_transport_msg("sent acknowledgement of the RMI connection to the remote peer.", @peeraddr)
-
-      len = @socket.read(2).unpack("S>")[0]
-      rmi_server_ip = @socket.read(len)
-      rmi_server_port = @socket.read(4).unpack("L>")[0]
-      if rmi_server_port.zero?
-        Utils.print_rmi_transport_msg("the remote peer is an RMI Client.", @peeraddr)
+        # read and discard the endpoint
+        len = @socket.read(2).unpack("S>")[0]
+        rmi_server_ip = @socket.read(len)
+        rmi_server_port = @socket.read(4).unpack("L>")[0]
+      when TransportConstants::SINGLE_OP_PROTOCOL
       else
-        Utils.print_rmi_transport_msg("the remote peer is an RMI Server, listening for remote invocations @ #{rmi_server_ip}:#{rmi_server_port}.", @peeraddr)
+        Utils.print_rmi_transport_msg("received an invalid RMI protocol type.", @peeraddr, "red")
       end
-
       unless rmi_message_valid?
         Utils.print_rmi_transport_msg("received an invalid RMI message.", @peeraddr, "red")
         return
@@ -51,11 +51,15 @@ module Ermir
         Utils.print_rmi_transport_msg("received an incorrect Registry interface hash.", @peeraddr, "red")
         return
       end
-
-      ret = self.send("handle_#{TransportConstants::OPS[op]}")
-      if ret.is_a?(String)
-        Utils.print_rmi_transport_msg("error: #{ret}.", @peeraddr, "red")
+      if (0..4).include?(op)
+        ret = self.send("handle_#{TransportConstants::OPS[op]}")
+        if ret.is_a?(String)
+          Utils.print_rmi_transport_msg("error: #{ret}.", @peeraddr, "red")
+        end
+      else
+        Utils.print_rmi_transport_msg("error: received an invalid RMI CALL OP.", @peeraddr, "red")
       end
+
     end
 
     def close_connection!
@@ -65,8 +69,7 @@ module Ermir
     private
     def rmi_header_valid?
       @socket.read(4).unpack("L>")[0].eql?(TransportConstants::MAGIC) \
-        && @socket.read(2).unpack("S>")[0].eql?(TransportConstants::VERSION) \
-        && @socket.getbyte.eql?(TransportConstants::STREAM_PROTOCOL)
+        && @socket.read(2).unpack("S>")[0].eql?(TransportConstants::VERSION)
     end
 
     def rmi_message_valid?
@@ -99,16 +102,15 @@ module Ermir
       end
       bind_key_size = @socket.read(2).unpack("S>")[0]
       bind_key = @socket.read(bind_key_size)
-      if @socket.getbyte.eql?(TransportConstants::TC_OBJECT)
-        if [TransportConstants::TC_PROXYCLASSDESC, TransportConstants::TC_CLASSDESC].include?(@socket.getbyte)
+      case @socket.getbyte
+      when TransportConstants::TC_OBJECT
+        case @socket.getbyte
+        when TransportConstants::TC_PROXYCLASSDESC
           interfaces_count = @socket.read(4).unpack("L>")[0]
           implemented_interfaces = []
           interfaces_count.times do
             interface_name_size = @socket.read(2).unpack("S>")[0]
-            if interface_name_size > 100
-              Utils.print_time_msg("the received interface name length exceeds the max length, breaking the read...")
-              break
-            end
+            return "the received interface name length exceeds the max length" if interface_name_size > 100
             implemented_interfaces << @socket.read(interface_name_size)
           end
           if implemented_interfaces[0] == "java.rmi.Remote"
@@ -116,9 +118,20 @@ module Ermir
           else
             Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, <java.lang.reflect.Proxy handling <#{implemented_interfaces*', '}> interfaces>) was called by the remote peer.", @peeraddr)
           end
+        when TransportConstants::TC_CLASSDESC
+          class_name_size = @socket.read(2).unpack("S>")[0]
+          return "the received class name length exceeds the max length" if class_name_size > 100
+          class_name = @socket.read(class_name_size)
+          if class_name == "com.sun.jndi.rmi.registry.ReferenceWrapper_Stub"
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, Reference(\"className\")) was called by the remote peer.", @peeraddr)
+          else
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, #{class_name}) was called by the remote peer.", @peeraddr)
+          end
         else
-          return "received a corrupted RMI message body"
+          return "received a corrupted/unimplemented RMI message body"
         end
+      else
+        return "received an corrupted/unimplemented object"
       end
       write_return_block normal_return: false
       write_object
