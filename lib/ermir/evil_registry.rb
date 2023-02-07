@@ -123,7 +123,7 @@ module Ermir
           return "the received class name length exceeds the max length" if class_name_size > 100
           class_name = @socket.read(class_name_size)
           if class_name == "com.sun.jndi.rmi.registry.ReferenceWrapper_Stub"
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, Reference(\"className\")) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, new Reference(\"className\")) was called by the remote peer.", @peeraddr)
           else
             Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, #{class_name}) was called by the remote peer.", @peeraddr)
           end
