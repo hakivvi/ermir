@@ -125,7 +125,7 @@ module Ermir
           if class_name == "com.sun.jndi.rmi.registry.ReferenceWrapper_Stub"
             Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, new Reference(\"className\")) was called by the remote peer.", @peeraddr)
           else
-            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, #{class_name}) was called by the remote peer.", @peeraddr)
+            Utils.print_rmi_transport_msg("Ermir.#{rebind && 're' || ''}bind(#{bind_key.inspect}, new #{class_name}(?)) was called by the remote peer.", @peeraddr)
           end
         else
           return "received a corrupted/unimplemented RMI message body"
