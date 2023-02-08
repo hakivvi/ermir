@@ -47,7 +47,7 @@ module Ermir
       op = @socket.read(4).unpack("L>")[0]
       interface_hash = @socket.read(8).unpack("Q>")[0]
 
-      unless interface_hash.eql?(rmi_server_port.zero? ? TransportConstants::INTERFACE_STUB_HASH : TransportConstants::INTERFACE_SKEL_HASH)
+      unless interface_hash.eql?(TransportConstants::INTERFACE_SKEL_HASH)
         Utils.print_rmi_transport_msg("received an incorrect Registry interface hash.", @peeraddr, "red")
         return
       end
